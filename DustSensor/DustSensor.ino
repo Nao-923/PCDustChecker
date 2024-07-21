@@ -53,7 +53,7 @@ void loop() {
   if ((millis() - startTimeMillis) > sampleTimeMillis) {
 
     Serial.println("test");
-    ratio = lowPulseOccupancy / (sampleTimeMillis * 10.0); // Integer percentage 0=>100
+    ratio = lowPulseOccupancy / (sampleTimeMillis * 10.0);
     concentration = 1.1 * pow(ratio, 3) - 3.8 * pow(ratio, 2) + 520 * ratio + 0.62; 
     char json[200];
     const size_t capacity = JSON_OBJECT_SIZE(4);
@@ -75,7 +75,7 @@ void loop() {
 
   if (M5.Btn.wasPressed()) {
     Serial.println("test");
-    ratio = lowPulseOccupancy / (sampleTimeMillis * 10.0); // Integer percentage 0=>100
+    ratio = lowPulseOccupancy / (sampleTimeMillis * 10.0);
     concentration = 1.1 * pow(ratio, 3) - 3.8 * pow(ratio, 2) + 520 * ratio + 0.62; 
     char json[200];
     const size_t capacity = JSON_OBJECT_SIZE(4);
