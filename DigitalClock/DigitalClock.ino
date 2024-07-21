@@ -22,6 +22,7 @@ PubSubClient client(espClient);
 
 float ratio = 0.0;
 
+
 void setup() {
   M5.begin();
   M5.Lcd.setTextColor(TFT_WHITE, TFT_BLACK);
@@ -52,8 +53,13 @@ void loop() {
   client.loop();
 
   displayTime();
-  displayRatio();
-  setBrightness();
+  
+  M5.Lcd.setTextSize(2);
+  M5.Lcd.setCursor(0, 220);
+  M5.Lcd.printf("Ratio: %.6f", ratio);
+
+  float voltage = map(ratio * 100, 0.0, 10.0,  3300.0, 2500.0);
+  M5.Axp.SetLcdVoltage(voltage);
 
   delay(1000);
 }
@@ -71,18 +77,6 @@ void displayTime() {
   M5.Lcd.setTextSize(6);
   M5.Lcd.setCursor(60, 90);
   M5.Lcd.print(timeString);
-}
-
-void displayRatio() {
-  M5.Lcd.setTextSize(2);
-  M5.Lcd.setCursor(0, 220);
-  M5.Lcd.printf("Ratio: %.6f", ratio);
-}
-
-void setBrightness() {
-  int brightness = map(ratio * 100, 0, 50, 100, 0);
-  brightness = constrain(brightness, 0, 100);
-  M5.Lcd.setBrightness(brightness);
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {

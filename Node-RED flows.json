@@ -11,7 +11,7 @@
         "id": "229d5aa87957cc2e",
         "type": "http in",
         "z": "7c7cc46b9539fb72",
-        "name": "GET /get-csv",
+        "name": "",
         "url": "/get-csv",
         "method": "get",
         "upload": false,
@@ -29,34 +29,14 @@
         "type": "mongodb in",
         "z": "7c7cc46b9539fb72",
         "mongodb": "0f4b2eba613700a5",
-        "name": "Read from MongoDB",
+        "name": "",
         "collection": "readings",
         "operation": "find",
-        "x": 280,
+        "x": 330,
         "y": 380,
         "wires": [
             [
-                "ca053cf66c39b3b1"
-            ]
-        ]
-    },
-    {
-        "id": "ca053cf66c39b3b1",
-        "type": "function",
-        "z": "7c7cc46b9539fb72",
-        "name": "Convert to CSV",
-        "func": "function convertToCSV(data) {\n    if (data.length === 0) return '';\n\n    const headers = Object.keys(data[0]);\n    const csvRows = [];\n\n    // Add headers\n    csvRows.push(headers.join(','));\n\n    // Add data\n    for (const row of data) {\n        const values = headers.map(header => {\n            const val = row[header];\n            return `\"${val}\"`; // Wrap in quotes to handle commas in data\n        });\n        csvRows.push(values.join(','));\n    }\n\n    return csvRows.join('\\n');\n}\n\nmsg.payload = convertToCSV(msg.payload);\nreturn msg;",
-        "outputs": 1,
-        "timeout": "",
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 480,
-        "y": 380,
-        "wires": [
-            [
-                "6d29e2caf9fb5092"
+                "06c908586d088bc2"
             ]
         ]
     },
@@ -64,7 +44,7 @@
         "id": "6d29e2caf9fb5092",
         "type": "function",
         "z": "7c7cc46b9539fb72",
-        "name": "Set Headers",
+        "name": "ヘッダー追加",
         "func": "msg.headers = {\n    'Content-Type': 'text/csv',\n    'Content-Disposition': 'attachment; filename=sensor_data.csv'\n};\nreturn msg;",
         "outputs": 1,
         "timeout": "",
@@ -72,7 +52,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 680,
+        "x": 730,
         "y": 380,
         "wires": [
             [
@@ -84,40 +64,18 @@
         "id": "ea9b17b3c5c2e61a",
         "type": "http response",
         "z": "7c7cc46b9539fb72",
-        "name": "Send CSV",
+        "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 880,
+        "x": 870,
         "y": 380,
         "wires": []
-    },
-    {
-        "id": "5ab4c7183347815f",
-        "type": "mqtt in",
-        "z": "7c7cc46b9539fb72",
-        "name": "MQTT入力",
-        "topic": "/dust",
-        "qos": "2",
-        "datatype": "json",
-        "broker": "4377a21b30155735",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 80,
-        "y": 220,
-        "wires": [
-            [
-                "7571dc75b83b3bf2",
-                "db149d9625c09b7b"
-            ]
-        ]
     },
     {
         "id": "7d79b2d92d95dfe3",
         "type": "aedes broker",
         "z": "7c7cc46b9539fb72",
-        "name": "MQTTブローカー",
+        "name": "",
         "mqtt_port": 1883,
         "mqtt_ws_bind": "port",
         "mqtt_ws_port": "",
@@ -129,7 +87,7 @@
         "persistence_bind": "memory",
         "dburl": "",
         "usetls": false,
-        "x": 100,
+        "x": 110,
         "y": 160,
         "wires": [
             [],
@@ -137,7 +95,28 @@
         ]
     },
     {
-        "id": "7571dc75b83b3bf2",
+        "id": "cffc2b8e79e803b4",
+        "type": "mqtt in",
+        "z": "7c7cc46b9539fb72",
+        "name": "",
+        "topic": "/dust",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "4377a21b30155735",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 70,
+        "y": 240,
+        "wires": [
+            [
+                "74d19367ae5561e4"
+            ]
+        ]
+    },
+    {
+        "id": "7d623084ca160f34",
         "type": "change",
         "z": "7c7cc46b9539fb72",
         "name": "データ抽出",
@@ -155,50 +134,96 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 310,
-        "y": 220,
+        "x": 490,
+        "y": 320,
         "wires": [
             [
-                "746c0d3f348cae31",
-                "5b60f2e5a46c9cf5",
-                "e485fbecfa3b3ad1"
+                "adb3d96f6e199e50",
+                "94b7e58d48986e7a"
             ]
         ]
     },
     {
-        "id": "db149d9625c09b7b",
+        "id": "d5736e6b7a23448c",
         "type": "mongodb out",
         "z": "7c7cc46b9539fb72",
         "mongodb": "0f4b2eba613700a5",
-        "name": "MongoDB挿入",
+        "name": "",
         "collection": "readings",
         "payonly": true,
         "upsert": false,
         "multi": false,
         "operation": "insert",
-        "x": 320,
-        "y": 300,
+        "x": 550,
+        "y": 240,
         "wires": []
     },
     {
-        "id": "746c0d3f348cae31",
-        "type": "debug",
+        "id": "adb3d96f6e199e50",
+        "type": "function",
         "z": "7c7cc46b9539fb72",
-        "name": "debug 2",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 570,
-        "y": 220,
-        "wires": []
+        "name": "チャート用データ変換",
+        "func": "msg.payload = {\n    x: new Date(),\n    y: msg.payload\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 240,
+        "wires": [
+            [
+                "12622cc40ffca2a0"
+            ]
+        ]
     },
     {
-        "id": "5b60f2e5a46c9cf5",
+        "id": "12622cc40ffca2a0",
+        "type": "ui_chart",
+        "z": "7c7cc46b9539fb72",
+        "name": "",
+        "group": "d382f88ba25b088f",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1030,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "94b7e58d48986e7a",
         "type": "mqtt out",
         "z": "7c7cc46b9539fb72",
         "name": "",
@@ -211,90 +236,150 @@
         "correl": "",
         "expiry": "",
         "broker": "4377a21b30155735",
-        "x": 570,
-        "y": 160,
+        "x": 700,
+        "y": 320,
         "wires": []
     },
     {
-        "id": "5f91b39ffdfe5eca",
-        "type": "ui_chart",
+        "id": "74d19367ae5561e4",
+        "type": "function",
         "z": "7c7cc46b9539fb72",
-        "name": "",
-        "group": "d382f88ba25b088f",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "label": "Dust Sensor Ratio",
-        "chartType": "line",
-        "legend": "false",
-        "xformat": "auto",
-        "interpolate": "linear",
-        "nodata": "",
-        "dot": false,
-        "ymin": "",
-        "ymax": "",
-        "removeOlder": 1,
-        "removeOlderPoints": "",
-        "removeOlderUnit": "3600",
-        "cutout": 0,
-        "useOneColor": false,
-        "useUTC": false,
-        "colors": [
-            "#1f77b4",
-            "#000000",
-            "#000000",
-            "#000000",
-            "#000000",
-            "#000000",
-            "#000000",
-            "#000000",
-            "#000000"
-        ],
+        "name": "データ整形",
+        "func": "msg.payload = {\n    deviceID: msg.payload.deviceID,\n    lowPulseOccupancy: msg.payload.lowPulseOccupancy,\n    Ratio: msg.payload.Ratio,\n    concentration: msg.payload.concentration,\n    timestamp: new Date()\n};\nreturn msg;",
         "outputs": 1,
-        "useDifferentColor": false,
-        "className": "",
-        "x": 880,
-        "y": 100,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 240,
         "wires": [
-            []
+            [
+                "d5736e6b7a23448c",
+                "7d623084ca160f34"
+            ]
         ]
     },
     {
-        "id": "e485fbecfa3b3ad1",
+        "id": "06c908586d088bc2",
         "type": "function",
         "z": "7c7cc46b9539fb72",
-        "name": "フォーマット for チャート",
-        "func": "msg.payload = {\n    x: new Date(),\n    y: msg.payload\n};\nreturn msg;",
+        "name": "CSV変換",
+        "func": "function convertToCSV(data) {\n    if (data.length === 0) return '';\n\n    const headers = Object.keys(data[0]);\n    const csvData = [];\n\n    csvData.push(headers.join(','));\n\n    for (const row of data) {\n        const values = headers.map(header => {\n            const val = row[header];\n            return `\"${val}\"`;\n        });\n        csvData.push(values.join(','));\n    }\n\n    return csvData.join('\\n');\n}\n\nmsg.payload = convertToCSV(msg.payload);\nreturn msg;",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 630,
-        "y": 100,
+        "x": 580,
+        "y": 380,
         "wires": [
             [
-                "5f91b39ffdfe5eca",
-                "cc95a77db2f5643a"
+                "6d29e2caf9fb5092"
             ]
         ]
     },
     {
-        "id": "cc95a77db2f5643a",
-        "type": "debug",
+        "id": "712022f56d743dbc",
+        "type": "inject",
         "z": "7c7cc46b9539fb72",
-        "name": "debug 3",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 860,
-        "y": 140,
-        "wires": []
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0.03",
+        "payloadType": "num",
+        "x": 410,
+        "y": 80,
+        "wires": [
+            [
+                "94b7e58d48986e7a"
+            ]
+        ]
+    },
+    {
+        "id": "0bb6077cc8867166",
+        "type": "inject",
+        "z": "7c7cc46b9539fb72",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 410,
+        "y": 40,
+        "wires": [
+            [
+                "94b7e58d48986e7a"
+            ]
+        ]
+    },
+    {
+        "id": "5873ebe8bbd24e57",
+        "type": "inject",
+        "z": "7c7cc46b9539fb72",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0.07",
+        "payloadType": "num",
+        "x": 410,
+        "y": 120,
+        "wires": [
+            [
+                "94b7e58d48986e7a"
+            ]
+        ]
+    },
+    {
+        "id": "9ef1b0a86c76af7f",
+        "type": "inject",
+        "z": "7c7cc46b9539fb72",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0.1",
+        "payloadType": "num",
+        "x": 410,
+        "y": 160,
+        "wires": [
+            [
+                "94b7e58d48986e7a"
+            ]
+        ]
     },
     {
         "id": "0f4b2eba613700a5",
